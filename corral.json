@@ -1,0 +1,14 @@
+{
+  "packages": [
+    "gpiod"
+  ],
+  "deps": [],
+  "info": {
+    "description": "Pony wrapper for the libgpiod kernel interface to access GPIO pins.",
+    "homepage": "",
+    "license": "ALv2",
+    "documentation_url": "",
+    "version": "",
+    "name": "pony-gpiod"
+  }
+}
