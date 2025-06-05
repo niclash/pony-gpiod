@@ -6,7 +6,7 @@ use @gpiod_request_config_get_consumer[Pointer[U8 val] box](cfg:Pointer[None] ta
 use @gpiod_request_config_set_event_buffer_size[None](cfg:Pointer[None] tag, event_buffer_size:I32)
 use @gpiod_request_config_get_event_buffer_size[I32](cfg:Pointer[None] tag)
 
-class GpioRequestConfig
+class iso GpioRequestConfig
   """
   Functions for manipulating request configuration objects.
 
