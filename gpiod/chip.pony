@@ -3,17 +3,17 @@ use "lib:gpiod"
 use @gpiod_chip_open[Pointer[None] tag](path:Pointer[U8 val] tag)
 use @gpiod_chip_close[None](chip:Pointer[None] tag)
 use @gpiod_chip_get_info[Pointer[None] tag](chip:Pointer[None] tag)
-use @gpiod_chip_get_path[Pointer[U8 val] box](chip:Pointer[None] tag)
-use @gpiod_chip_get_lineinfo[Pointer[None]](chip:Pointer[None] tag, offset:U32)
-use @gpiod_chip_watch_lineinfo[Pointer[None]](chip:Pointer[None] tag, offset:U32)
-use @gpiod_chip_unwatch_lineinfo[I32](chip:Pointer[None] tag, offset:U32)
-use @gpiod_chip_get_fd[I32](chip:Pointer[None] tag)
-use @gpiod_chip_wait_info_event[I32](chip:Pointer[None] tag, timeout:I64)
-use @gpiod_chip_read_info_event[Pointer[None]](chip:Pointer[None] tag)
-use @gpiod_chip_get_line_offset_from_name[I32](chip:Pointer[None] tag, name:Pointer[U8 val] tag)
+use @gpiod_chip_get_path[Pointer[U8 val] val](chip:Pointer[None] tag)
+use @gpiod_chip_get_lineinfo[Pointer[None] val](chip:Pointer[None] tag, offset:U32)
+use @gpiod_chip_watch_lineinfo[Pointer[None] val](chip:Pointer[None] tag, offset:U32)
+use @gpiod_chip_unwatch_lineinfo[I32 val](chip:Pointer[None] tag, offset:U32)
+use @gpiod_chip_get_fd[I32 val](chip:Pointer[None] tag)
+use @gpiod_chip_wait_info_event[I32 val](chip:Pointer[None] tag, timeout:I64)
+use @gpiod_chip_read_info_event[Pointer[None] val](chip:Pointer[None] tag)
+use @gpiod_chip_get_line_offset_from_name[I32 val](chip:Pointer[None] tag, name:Pointer[U8 val] tag)
 use @gpiod_chip_request_lines[Pointer[None]](chip:Pointer[None] tag, req_cfg:Pointer[None], line_cfg:Pointer[None] )
 
-class GpioChip
+class val GpioChip
   """
   Functions and data structures for GPIO chip operations.
 
@@ -44,7 +44,7 @@ class GpioChip
   """
     @gpiod_chip_close(_ctx)
 
-  fun get_info():ChipInfo ? =>
+  fun get_info():ChipInfo val ? =>
     """
     Get information about the chip.
     """
@@ -52,22 +52,22 @@ class GpioChip
     if result.is_null() then error end
     ChipInfo(result)
 
-  fun get_path():String ref =>
+  fun get_path():String val =>
     """
     Get the path used to open the chip.
     """
     let result = @gpiod_chip_get_path(_ctx)
-    String.copy_cstring(result)
+    recover val String.copy_cstring(result) end
 
-  fun get_lineinfo(offset:U32):GpioLineInfo ? =>
+  fun get_lineinfo(offset:U32):GpioLineInfo val ? =>
     """
     Get a snapshot of information about a line.
     """
     let result = @gpiod_chip_get_lineinfo(_ctx, offset)
     if result.is_null() then error end
-    GpioLineInfo(result)
+    recover val GpioLineInfo(result) end
 
-  fun watch_lineinfo(offset:U32):GpioLineInfo ? =>
+  fun watch_lineinfo(offset:U32):GpioLineInfo val ? =>
     """
     Get a snapshot of the status of a line and start watching it for future changes.
 
@@ -78,7 +78,7 @@ class GpioChip
     """
     let result = @gpiod_chip_watch_lineinfo(_ctx, offset)
     if result.is_null() then error end
-    GpioLineInfo(result)
+    recover val GpioLineInfo(result) end
 
   fun unwatch_lineinfo(offset:U32):I32 =>
     """
@@ -88,7 +88,7 @@ class GpioChip
     """
     @gpiod_chip_unwatch_lineinfo(_ctx, offset)
 
-  fun get_fd():I32 =>
+  fun get_fd():I32 val =>
     """
     Get the file descriptor associated with the chip.
 
@@ -96,7 +96,7 @@ class GpioChip
     """
     @gpiod_chip_get_fd(_ctx)
 
-  fun wait_info_event(timeout_ns:I64):I32 =>
+  fun wait_info_event(timeout_ns:I64):I32 val =>
     """
     Wait for line status change events on any of the watched lines on the chip.
 
@@ -107,7 +107,7 @@ class GpioChip
     """
     @gpiod_chip_wait_info_event(_ctx, timeout_ns)
 
-  fun read_info_event():GpioInfoEvent ? =>
+  fun read_info_event():GpioInfoEvent val ? =>
     """
     Read a single line status change event from the chip.
 
@@ -115,9 +115,9 @@ class GpioChip
     """
     let result = @gpiod_chip_read_info_event(_ctx)
     if result.is_null() then error end
-    GpioInfoEvent(result)
+    recover val GpioInfoEvent(result) end
 
-  fun get_line_offset_from_name(name:String):I32 ? =>
+  fun get_line_offset_from_name(name:String):I32 val ? =>
     """
     Map a line’s name to its offset within the chip.
 
@@ -130,7 +130,7 @@ class GpioChip
     if result == -1 then error end
     result
 
-  fun request_lines(req_cfg:GpioRequestConfig, line_cfg:GpioLineConfig):GpioLineRequest ? =>
+  fun request_lines(req_cfg:GpioRequestConfig, line_cfg:GpioLineConfig):GpioLineRequest val ? =>
     """
     Request a set of lines for exclusive usage.
 
@@ -142,4 +142,4 @@ class GpioChip
     """
     let result = @gpiod_chip_request_lines(_ctx, req_cfg.cpointer(), line_cfg.cpointer())
     if result.is_null() then error end
-    GpioLineRequest(result)
+    recover val GpioLineRequest(result) end
