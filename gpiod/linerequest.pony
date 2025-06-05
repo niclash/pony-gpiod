@@ -15,13 +15,13 @@ use @gpiod_line_request_set_values_subset[I32](request:Pointer[None] tag, num_va
 use @gpiod_line_request_set_values[I32](request:Pointer[None] tag, values:Pointer[I32] tag)
 
 
-class iso GpioLineRequest
+class GpioLineRequest
   """
   Functions allowing interactions with requested lines.
   """
   let _ctx: Pointer[None] tag
 
-  new iso create(ctx:Pointer[None] tag) =>
+  new create(ctx:Pointer[None] tag) =>
     _ctx = ctx
 
   fun _final() =>

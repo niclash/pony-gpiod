@@ -13,7 +13,7 @@ use @gpiod_chip_read_info_event[Pointer[None]](chip:Pointer[None] tag)
 use @gpiod_chip_get_line_offset_from_name[I32](chip:Pointer[None] tag, name:Pointer[U8 val] tag)
 use @gpiod_chip_request_lines[Pointer[None]](chip:Pointer[None] tag, req_cfg:Pointer[None], line_cfg:Pointer[None] )
 
-class iso GpioChip
+class GpioChip
   """
   Functions and data structures for GPIO chip operations.
 
@@ -44,7 +44,7 @@ class iso GpioChip
   """
     @gpiod_chip_close(_ctx)
 
-  fun iso get_info():ChipInfo ? =>
+  fun get_info():ChipInfo ? =>
     """
     Get information about the chip.
     """
@@ -59,7 +59,7 @@ class iso GpioChip
     let result = @gpiod_chip_get_path(_ctx)
     String.copy_cstring(result)
 
-  fun iso get_lineinfo(offset:U32):GpioLineInfo ? =>
+  fun get_lineinfo(offset:U32):GpioLineInfo ? =>
     """
     Get a snapshot of information about a line.
     """
@@ -67,7 +67,7 @@ class iso GpioChip
     if result.is_null() then error end
     GpioLineInfo(result)
 
-  fun iso watch_lineinfo(offset:U32):GpioLineInfo ? =>
+  fun watch_lineinfo(offset:U32):GpioLineInfo ? =>
     """
     Get a snapshot of the status of a line and start watching it for future changes.
 
@@ -130,7 +130,7 @@ class iso GpioChip
     if result == -1 then error end
     result
 
-  fun iso request_lines(req_cfg:GpioRequestConfig, line_cfg:GpioLineConfig):GpioLineRequest ? =>
+  fun request_lines(req_cfg:GpioRequestConfig, line_cfg:GpioLineConfig):GpioLineRequest ? =>
     """
     Request a set of lines for exclusive usage.
 

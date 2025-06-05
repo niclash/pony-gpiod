@@ -4,7 +4,7 @@ use @gpiod_chip_info_get_name[Pointer[U8 val] box](info:Pointer[None] tag)
 use @gpiod_chip_info_get_label[Pointer[U8 val] box](info:Pointer[None] tag)
 use @gpiod_chip_info_get_num_lines[USize](info:Pointer[None] tag)
 
-class val ChipInfo
+class ChipInfo
   """
   Functions for retrieving kernel information about chips.
 
@@ -14,7 +14,7 @@ class val ChipInfo
   """
   let _ctx: Pointer[None] tag
 
-  new val create(ctx:Pointer[None] tag) =>
+  new create(ctx:Pointer[None] tag) =>
     _ctx = ctx
 
   fun _final() =>

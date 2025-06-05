@@ -14,7 +14,7 @@ use @gpiod_line_info_is_debounced[Bool](info:Pointer[None] tag)
 use @gpiod_line_info_get_debounce_period_us[U64](info:Pointer[None] tag)
 use @gpiod_line_info_get_event_clock[I32](info:Pointer[None] tag)
 
-class iso GpioLineInfo
+class GpioLineInfo
   """
   Functions for retrieving kernel information about both requested and free
   lines.
@@ -27,13 +27,13 @@ class iso GpioLineInfo
   """
   let _ctx:Pointer[None] tag
 
-  new iso create(ctx:Pointer[None] tag) =>
+  new create(ctx:Pointer[None] tag) =>
     _ctx = ctx
 
   fun _final() =>
     @gpiod_line_info_free(_ctx)
 
-  fun iso copy(): GpioLineInfo =>
+  fun copy(): GpioLineInfo =>
     """
      Copy a line info object.
     """

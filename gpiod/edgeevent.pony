@@ -22,7 +22,7 @@ primitive GpioEdgeEventFallingEdge
 
 type GpioEdgeEventType is (GpioEdgeEventRisingEdge | GpioEdgeEventFallingEdge)
 
-class val GpioEdgeEvent
+class GpioEdgeEvent
   """
   Functions and data types for handling edge events.
 
@@ -37,13 +37,13 @@ class val GpioEdgeEvent
   """
   let _ctx:Pointer[None] tag
 
-  new iso create(ctx:Pointer[None] tag) =>
+  new create(ctx:Pointer[None] tag) =>
     _ctx = ctx
 
   fun _final() =>
     @gpiod_edge_event_free(_ctx)
 
-  fun iso copy():GpioEdgeEvent ? =>
+  fun copy():GpioEdgeEvent ? =>
     """
     Copy the edge event object.
 
@@ -100,7 +100,7 @@ class val GpioEdgeEvent
     """
     @gpiod_edge_event_get_line_seqno(_ctx)
 
-  fun iso buffer_new(capacity:USize):GpioEdgeEventBuffer ? =>
+  fun buffer_new(capacity:USize):GpioEdgeEventBuffer ? =>
     """
     Create a new edge event buffer.
     @param capacity Number of events the buffer can store (min = 1, max = 1024).
@@ -118,10 +118,10 @@ class val GpioEdgeEvent
     GpioEdgeEventBuffer(result)
 
 
-class iso GpioEdgeEventBuffer
+class GpioEdgeEventBuffer
   let _ctx:Pointer[None] tag
 
-  new iso create(ctx:Pointer[None] tag) =>
+  new create(ctx:Pointer[None] tag) =>
     _ctx = ctx
 
   fun _final() =>
@@ -134,7 +134,7 @@ class iso GpioEdgeEventBuffer
     """
     USize.from[U32](@gpiod_edge_event_buffer_get_capacity(_ctx))
 
-  fun iso get_event(index:USize):GpioEdgeEvent ? =>
+  fun get_event(index:USize):GpioEdgeEvent ? =>
     """
     Get an event stored in the buffer.
 

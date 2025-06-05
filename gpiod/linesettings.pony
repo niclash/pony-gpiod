@@ -21,7 +21,7 @@ use @gpiod_line_settings_get_output_value[I32](settings:Pointer[None] tag)
 
 
 
-class iso GpioLineSettings
+class GpioLineSettings
   """
   Functions for manipulating line settings objects.
 
@@ -35,10 +35,10 @@ class iso GpioLineSettings
   """
   let _ctx:Pointer[None] tag
 
-  new iso create() =>
+  new create() =>
     _ctx = @gpiod_line_settings_new()
 
-  new iso from_ptr(ctx:Pointer[None] tag) =>
+  new from_ptr(ctx:Pointer[None] tag) =>
     _ctx = ctx
 
   fun final() =>
@@ -53,7 +53,7 @@ class iso GpioLineSettings
     """
     @gpiod_line_settings_reset(_ctx)
 
-  fun iso copy(): GpioLineSettings ? =>
+  fun copy(): GpioLineSettings ? =>
     """
     Copy the line settings object.
     """

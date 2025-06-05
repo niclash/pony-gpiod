@@ -9,7 +9,7 @@ use @gpiod_line_config_get_configured_offsets[U32](config:Pointer[None] tag, off
 
 
 
-class iso GpioLineConfig
+class GpioLineConfig
   """
   Functions for manipulating line configuration objects.
 
@@ -65,7 +65,7 @@ class iso GpioLineConfig
     end
     @gpiod_line_config_add_line_settings(_ctx, offs.cpointer(), offsets.size().u32(), settings.cpointer())
 
-  fun iso get_line_settings(offset:USize):GpioLineSettings =>
+  fun get_line_settings(offset:USize):GpioLineSettings =>
     """
     Get line settings for offset.
 
