@@ -65,7 +65,7 @@ class val GpioChip
     """
     let result = @gpiod_chip_get_lineinfo(_ctx, offset)
     if result.is_null() then error end
-    recover val GpioLineInfo(result) end
+    GpioLineInfo(result)
 
   fun watch_lineinfo(offset:U32):GpioLineInfo val ? =>
     """
@@ -78,7 +78,7 @@ class val GpioChip
     """
     let result = @gpiod_chip_watch_lineinfo(_ctx, offset)
     if result.is_null() then error end
-    recover val GpioLineInfo(result) end
+    GpioLineInfo(result)
 
   fun unwatch_lineinfo(offset:U32):I32 =>
     """
@@ -88,7 +88,7 @@ class val GpioChip
     """
     @gpiod_chip_unwatch_lineinfo(_ctx, offset)
 
-  fun get_fd():I32 val =>
+  fun get_fd():I32 =>
     """
     Get the file descriptor associated with the chip.
 
@@ -115,7 +115,7 @@ class val GpioChip
     """
     let result = @gpiod_chip_read_info_event(_ctx)
     if result.is_null() then error end
-    recover val GpioInfoEvent(result) end
+    GpioInfoEvent(result)
 
   fun get_line_offset_from_name(name:String):I32 val ? =>
     """
@@ -142,4 +142,4 @@ class val GpioChip
     """
     let result = @gpiod_chip_request_lines(_ctx, req_cfg.cpointer(), line_cfg.cpointer())
     if result.is_null() then error end
-    recover val GpioLineRequest(result) end
+    GpioLineRequest(result)

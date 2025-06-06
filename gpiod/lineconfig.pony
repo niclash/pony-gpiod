@@ -9,7 +9,7 @@ use @gpiod_line_config_get_configured_offsets[U32](config:Pointer[None] tag, off
 
 
 
-class GpioLineConfig
+class val GpioLineConfig
   """
   Functions for manipulating line configuration objects.
 
@@ -29,7 +29,7 @@ class GpioLineConfig
   """
   let _ctx:Pointer[None] tag
 
-  new create() ? =>
+  new val create() ? =>
     _ctx = @gpiod_line_config_new()
     if _ctx.is_null() then error end
 
@@ -109,7 +109,7 @@ class GpioLineConfig
     """
     USize.from[U32](@gpiod_line_config_get_num_configured_offsets(_ctx))
 
-  fun get_configured_offsets(max_offsets:USize):Array[USize] ? =>
+  fun get_configured_offsets(max_offsets:USize):Array[USize] val ? =>
     """
     Get configured offsets.
 
@@ -121,14 +121,16 @@ class GpioLineConfig
     value can be retrieved using #get_num_configured_offsets()),
     then only up to max_lines offsets will be stored in offsets.
     """
-    let data = Array[U32](max_offsets)
-    let fetched:U32 = @gpiod_line_config_get_configured_offsets(_ctx, data.cpointer(), max_offsets.u32())
-    let len = USize.from[U32](fetched)
-    var result = Array[USize]
-    var idx:USize = 0
-    while idx < len do
-      let v = data(idx)?
-      result.push(USize.from[U32](v))
-      idx = idx + 1
+    recover val
+      let data = Array[U32](max_offsets)
+      let fetched:U32 = @gpiod_line_config_get_configured_offsets(_ctx, data.cpointer(), max_offsets.u32())
+      let len = USize.from[U32](fetched)
+      var result = Array[USize]
+      var idx:USize = 0
+      while idx < len do
+        let v = data(idx)?
+        result.push(USize.from[U32](v))
+        idx = idx + 1
+      end
+      result
     end
-    result

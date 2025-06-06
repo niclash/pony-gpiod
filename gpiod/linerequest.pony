@@ -15,26 +15,28 @@ use @gpiod_line_request_set_values_subset[I32](request:Pointer[None] tag, num_va
 use @gpiod_line_request_set_values[I32](request:Pointer[None] tag, values:Pointer[I32] tag)
 
 
-class GpioLineRequest
+class val GpioLineRequest
   """
   Functions allowing interactions with requested lines.
   """
   let _ctx: Pointer[None] tag
 
-  new create(ctx:Pointer[None] tag) =>
+  new val create(ctx:Pointer[None] tag) =>
     _ctx = ctx
 
   fun _final() =>
     @gpiod_line_request_release(_ctx)
 
-  fun get_chip_name():String ref =>
+  fun get_chip_name():String val =>
     """
     Get the name of the chip this request was made on.
     @return Name the GPIO chip device. The returned pointer is valid for the
     lifetime of the request object and must not be freed by the caller.
     """
-    let result = @gpiod_line_request_get_chip_name(_ctx)
-    String.copy_cstring(result)
+    recover val
+      let result = @gpiod_line_request_get_chip_name(_ctx)
+      String.copy_cstring(result)
+    end
 
   fun get_num_requested_lines(): USize =>
     """
@@ -44,7 +46,7 @@ class GpioLineRequest
     let result = @gpiod_line_request_get_num_requested_lines(_ctx)
     USize.from[U32](result)
 
-  fun get_requested_offsets(max_offsets:USize):Array[U32] =>
+  fun get_requested_offsets(max_offsets:USize):Array[U32] val =>
     """
      Get the offsets of the lines in the request.
 
@@ -56,12 +58,14 @@ class GpioLineRequest
      value can be retrieved using #get_num_requested_lines,
      then only up to max_lines offsets will be stored in offsets.
     """
-    let offsets = Array[U32](max_offsets)
-    let fetched = @gpiod_line_request_get_requested_offsets(_ctx, offsets.cpointer(), max_offsets.u32())
-    let len = USize.from[U32](fetched)
-    let result = Array[U32](len)
-    offsets.copy_to(result, 0, 0, len)
-    result
+    recover val
+      let offsets = Array[U32](max_offsets)
+      let fetched = @gpiod_line_request_get_requested_offsets(_ctx, offsets.cpointer(), max_offsets.u32())
+      let len = USize.from[U32](fetched)
+      let result = Array[U32](len)
+      offsets.copy_to(result, 0, 0, len)
+      result
+    end
 
   fun get_value(offset:USize): GpioLineValue =>
     """
@@ -72,7 +76,7 @@ class GpioLineRequest
     let result = @gpiod_line_request_get_value(_ctx, offset.u32())
     _line_value(result)
 
-  fun get_values_subset(offsets:Array[U32]): Array[GpioLineValue] ? =>
+  fun get_values_subset(offsets:Array[U32]): Array[GpioLineValue] val ? =>
     """
     Get the values of a subset of requested lines.
     @param num_values Number of lines for which to read values.
@@ -83,18 +87,20 @@ class GpioLineRequest
                   the line identified by the corresponding entry in \p offsets.
     @return 0 on success, -1 on failure.
     """
-    let len = offsets.size()
-    let data = Array[I32](len)
-    let fetched = @gpiod_line_request_get_values_subset(_ctx, len.u32(), offsets.cpointer(), data.cpointer())
-    let size = USize.from[U32](fetched)
-    let result = Array[GpioLineValue]
-    var idx:USize = 0
-    while idx < size do
-      let v = data(idx)?
-      result.push(_line_value(v))
-      idx = idx + 1
+    recover val
+      let len = offsets.size()
+      let data = Array[I32](len)
+      let fetched = @gpiod_line_request_get_values_subset(_ctx, len.u32(), offsets.cpointer(), data.cpointer())
+      let size = USize.from[U32](fetched)
+      let result = Array[GpioLineValue]
+      var idx:USize = 0
+      while idx < size do
+        let v = data(idx)?
+        result.push(_line_value(v))
+        idx = idx + 1
+      end
+      result
     end
-    result
 
   fun _line_value(cdata:I32):GpioLineValue =>
     match cdata
@@ -105,22 +111,24 @@ class GpioLineRequest
       GpioLineValueError
     end
 
-  fun get_values():Array[GpioLineValue] ? =>
+  fun get_values():Array[GpioLineValue] val ? =>
     """
     Get the values of all requested lines.
     """
-    let len = get_num_requested_lines()
-    let data = Array[I32](len)
-    let fetched = @gpiod_line_request_get_values(_ctx,data.cpointer())
-    let size = USize.from[U32](fetched)
-    let result = Array[GpioLineValue]
-    var idx:USize = 0
-    while idx < size do
-      let v = data(idx)?
-      result.push(_line_value(v))
-      idx = idx + 1
+    recover val
+      let len = get_num_requested_lines()
+      let data = Array[I32](len)
+      let fetched = @gpiod_line_request_get_values(_ctx,data.cpointer())
+      let size = USize.from[U32](fetched)
+      let result = Array[GpioLineValue]
+      var idx:USize = 0
+      while idx < size do
+        let v = data(idx)?
+        result.push(_line_value(v))
+        idx = idx + 1
+      end
+      result
     end
-    result
 
   fun set_value(offset:USize,value:GpioLineValue):I32 =>
     """
@@ -215,7 +223,7 @@ class GpioLineRequest
     """
     @gpiod_line_request_wait_edge_events(_ctx,timeout_ns)
 
-  fun read_edge_events(max_events:USize):Array[GpioEdgeEventBuffer] =>
+  fun read_edge_events(max_events:USize):Array[GpioEdgeEventBuffer] val =>
     """
     Read a number of edge events from a line request.
 
@@ -226,11 +234,13 @@ class GpioLineRequest
 
     @param max_events Maximum number of events to read.
     """
-    let buffer = Array[Pointer[None] tag](max_events)
-    let success = @gpiod_line_request_read_edge_events(_ctx, buffer.cpointer(), max_events.u32())
-    let result = Array[GpioEdgeEventBuffer]
-    for e in buffer.values() do
-      result.push(GpioEdgeEventBuffer(e))
+    recover val
+      let buffer = Array[Pointer[None] tag](max_events)
+      let success = @gpiod_line_request_read_edge_events(_ctx, buffer.cpointer(), max_events.u32())
+      let result = Array[GpioEdgeEventBuffer]
+      for e in buffer.values() do
+        result.push(GpioEdgeEventBuffer(e))
+      end
+      result
     end
-    result
 

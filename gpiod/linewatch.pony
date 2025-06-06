@@ -10,7 +10,7 @@ primitive GpioInfoEventLineConfigCchanged
 
 type GpioInfoEventType is (GpioInfoEventLineRequested | GpioInfoEventLineReleased | GpioInfoEventLineConfigCchanged)
 
-class GpioInfoEvent
+class val GpioInfoEvent
   """
   Accessors for the info event objects allowing to monitor changes in GPIO
   line status.
@@ -22,13 +22,13 @@ class GpioInfoEvent
   """
   let _ctx:Pointer[None] tag
 
-  new create(ctx:Pointer[None] tag) =>
+  new val create(ctx:Pointer[None] tag) =>
     _ctx = ctx
 
   fun _final() =>
     @gpiod_info_event_free(_ctx)
 
-  fun get_event_type():GpioInfoEventType =>
+  fun get_event_type():GpioInfoEventType val =>
     """
     Get the event type of the status change event.
     @return One of GpiodInfoEventLineRequested, GpiodInfoEventLineReleased or GpiodInfoEventLineConfigChanged.
@@ -52,7 +52,7 @@ class GpioInfoEvent
     """
     @gpiod_info_event_get_timestamp_ns(_ctx)
 
-  fun get_line_info():GpioLineInfo ? =>
+  fun get_line_info():GpioLineInfo val ? =>
     """
     Get the snapshot of line-info associated with the event.
 

@@ -26,11 +26,11 @@ class val ChipInfo
     """
     String.copy_cstring(@gpiod_chip_info_get_name(_ctx))
 
-  fun gpiod_chip_info_get_label(): String ref =>
+  fun gpiod_chip_info_get_label(): String val =>
     """
     Get the label of the chip as represented in the kernel.
     """
-    String.copy_cstring(@gpiod_chip_info_get_label(_ctx))
+    recover val String.copy_cstring(@gpiod_chip_info_get_label(_ctx)) end
 
   fun gpiod_chip_info_get_num_lines(): USize =>
     """
