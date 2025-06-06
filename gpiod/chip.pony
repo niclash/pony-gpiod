@@ -25,7 +25,7 @@ class val GpioChip
   """
   let _ctx:Pointer[None] tag
 
-  new create(path:String)? =>
+  new val create(path:String val)? =>
     """
     Open a chip by path.
 
@@ -130,7 +130,7 @@ class val GpioChip
     if result == -1 then error end
     result
 
-  fun request_lines(req_cfg:GpioRequestConfig, line_cfg:GpioLineConfig):GpioLineRequest val ? =>
+  fun request_lines(req_cfg:GpioRequestConfig val, line_cfg:GpioLineConfig):GpioLineRequest val ? =>
     """
     Request a set of lines for exclusive usage.
 

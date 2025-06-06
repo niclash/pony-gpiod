@@ -6,7 +6,7 @@ use @gpiod_request_config_get_consumer[Pointer[U8 val] box](cfg:Pointer[None] ta
 use @gpiod_request_config_set_event_buffer_size[None](cfg:Pointer[None] tag, event_buffer_size:I32)
 use @gpiod_request_config_get_event_buffer_size[I32](cfg:Pointer[None] tag)
 
-class GpioRequestConfig
+class val GpioRequestConfig
   """
   Functions for manipulating request configuration objects.
 
@@ -18,7 +18,7 @@ class GpioRequestConfig
   """
   let _ctx:Pointer[None] tag
 
-  new create() ? =>
+  new val create() ? =>
     let result = @gpiod_request_config_new()
     if result.is_null() then error end
     _ctx = result
@@ -34,12 +34,14 @@ class GpioRequestConfig
     """
     @gpiod_request_config_set_consumer(_ctx, consumer.cstring())
 
-  fun get_consumer():String ref =>
+  fun get_consumer():String val =>
     """
     Get the consumer name configured in the request config.
     """
-    let result = @gpiod_request_config_get_consumer(_ctx)
-    String.copy_cstring(result)
+    recover val
+      let result = @gpiod_request_config_get_consumer(_ctx)
+      String.copy_cstring(result)
+    end
 
   fun set_event_buffer_size(size:USize) =>
     """
